@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #12001f, #2b0040);
+            color: white;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* ===== TOP TABS ===== */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .tabs a {
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            background: rgba(255,255,255,0.15);
+            font-size: 14px;
+        }
+
+        .tabs a.active {
+            background: #7f3cff;
+            font-weight: bold;
+        }
+
+        /* ===== ALERT GRID (HORIZONTAL) ===== */
+        .alerts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .alert-card {
+            background: rgba(255,255,255,0.08);
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .alert-card:hover {
+            transform: scale(1.03);
+        }
+
+        .alert-card h4 {
+            margin: 0 0 8px;
+        }
+
+        .status {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* ===== POPUP ===== */
+        .popup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: #2b0040;
+            padding: 20px;
+            width: 320px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .popup-content button {
+            margin: 10px 5px;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .resolve {
+            background: #2ecc71;
+        }
+
+        .cancel {
+            background: #e74c3c;
+        }
+
+        .close-btn {
+            background: gray;
+        }
+    </style>
+</head>
+<body>
+
+<h2>📊 Admin Dashboard</h2>
+
+<!-- ===== TABS ===== -->
+<div class="tabs">
+    <a href="/admin?tab=all" class="{{ 'active' if tab=='all' else '' }}">All</a>
+    <a href="/admin?tab=active" class="{{ 'active' if tab=='active' else '' }}">Active</a>
+    <a href="/admin?tab=resolved" class="{{ 'active' if tab=='resolved' else '' }}">Resolved</a>
+    <a href="/admin?tab=cancelled" class="{{ 'active' if tab=='cancelled' else '' }}">Cancelled</a>
+</div>
+
+<!-- ===== ALERT CARDS ===== -->
+<div class="alerts-container">
+    {% for alert in alerts %}
+   <div class="alert-card" data-id="{{ alert.id }}" onclick="openPopup(this)">
+
+        <h4>🚨 {{ alert.type }}</h4>
+        <p><b>Time:</b> {{ alert.time }}</p>
+        <p class="status"><b>Status:</b> {{ alert.status }}</p>
+        <p><b>Lat:</b> {{ alert.location.lat }}</p>
+        <p><b>Lon:</b> {{ alert.location.lon }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- ===== POPUP ===== -->
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <h3>Alert Action</h3>
+        <button class="resolve" onclick="resolveAlert()">✅ Resolve</button>
+        <button class="cancel" onclick="cancelAlert()">❌ Cancel</button>
+        <br>
+        <button class="close-btn" onclick="closePopup()">Close</button>
+    </div>
+</div>
+
+<script>
+    let currentIndex = null;
+
+    function openPopup(index) {
+        currentIndex = index;
+        document.getElementById("popup").style.display = "flex";
+    }
+
+    function closePopup() {
+        document.getElementById("popup").style.display = "none";
+    }
+
+    function resolveAlert() {
+        fetch(`/resolve_alert/${currentIndex}`, { method: "POST" })
+            .then(() => location.reload());
+    }
+
+    function cancelAlert() {
+        fetch(`/cancel_alert/${currentIndex}`, { method: "POST" })
+            .then(() => location.reload());
+    }
+</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
+
+
+

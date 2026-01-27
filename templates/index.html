@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Community SOS Network</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>🚨 Community SOS Network</h2>
+
+    <p id="locationStatus">📍 Location not enabled</p>
+
+    <button class="location-btn" onclick="getLocation()">
+        Enable Location
+    </button>
+
+    <div id="emergencyButtons" style="display:none;">
+        <button class="sos fire" onclick="sendSOS('Fire')">🔥 Fire</button>
+        <button class="sos medical" onclick="sendSOS('Medical')">🩺 Medical</button>
+        <button class="sos crime" onclick="sendSOS('Crime')">🚔 Crime</button>
+        <button class="sos accident" onclick="sendSOS('Accident')">🚑 Accident</button>
+    </div>
+</div>
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>
+

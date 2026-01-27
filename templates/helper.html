@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Helper Dashboard</title>
+    <meta http-equiv="refresh" content="5">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body class="helper-body">
+
+<div class="container helper-container">
+
+    <h2 class="helper-title">🚨 Active SOS Alerts</h2>
+
+    {% if alerts %}
+        {% for alert in alerts %}
+            <div class="alert-card active">
+                <p><strong>Issue:</strong> {{ alert.issue }}</p>
+                <p><strong>Location:</strong> {{ alert.location }}</p>
+
+                <form method="POST" action="/accept_alert/{{ alert.id }}">
+                    <input type="hidden" name="helper_name" value="Community Helper">
+                    <button class="help-btn" type="submit">
+                        🤝 I CAN HELP
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-alerts-text">No active SOS alerts.</p>
+    {% endif %}
+
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
